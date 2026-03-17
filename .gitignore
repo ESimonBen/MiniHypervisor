@@ -1,6 +1,15 @@
 # Build directories
 build/
 
+# VS folder
+.vs/
+
+# Visual Studio Solution and Project Files
+.vcxproj
+.filters
+.user
+.sln
+
 # Dependency files
 *.d
 
