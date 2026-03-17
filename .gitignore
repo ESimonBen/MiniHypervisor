@@ -5,10 +5,10 @@ build/
 .vs/
 
 # Visual Studio Solution and Project Files
-.vcxproj
-.filters
-.user
-.sln
+*.vcxproj
+*.filters
+*.user
+*.sln
 
 # Dependency files
 *.d
