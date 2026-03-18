@@ -4,11 +4,8 @@ build/
 # VS folder
 .vs/
 
-# Visual Studio Solution and Project Files
-*.vcxproj
-*.filters
+# VCXPROJ User files
 *.user
-*.sln
 
 # Dependency files
 *.d

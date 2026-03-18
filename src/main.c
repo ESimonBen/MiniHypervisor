@@ -1,30 +1,22 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <intrin.h>
 
-uint64_t rdmsr(uint32_t msr) {
-    uint32_t low, high;
-    __asm__ volatile (
-        "rdmsr"
-        : "=a"(low), "=d"(high)
-        : "c"(msr)
-    );
-
-    return ((uint64_t)high << 32) | low; // Shifts the 32 bit number "high" 32 bits up (putting it into the 32 highest bits) and combining it with the 32 lowest bits from "low"
+// Read MSR (To be placed in a Windows kernel driver)
+uint64_t read_msr(uint32_t msr) {
+    return __readmsr(msr);
 }
 
 int main(){
-    uint32_t eax, ebx, ecx, edx;                     // Variables to store registers' values
-    __asm__ volatile (                               // __asm__ for inline assembly, volatile for the GCC compiler to tell it to not optimize
-        "cpuid"                                      // assembly instruction to be called after input
-        : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx) // output registers ("=a" = EAX/RAX register) being mapped to variables
-        : "a"(1)                                     // Input register (place 1 into EAX register)
-    );
+    int cpuInfo[4]; // Stores the resulting values from the eax (index 0), ebx (index 1), ecx (index 2), and edx (index 3s) registers in this array
 
-    if (ecx & (1 << 5)) {
-        printf("Intel VT-x supported\n");
+    __cpuid(cpuInfo, 1); // Calls the cpuid instruction intrinsically, and places the value 1 in the eax register before calling the instruction
+
+    if (cpuInfo[2] & (1 << 5)) {
+        printf("Intel VT-x supported\n"); // If the value in ECX is 32 (which is the value of 1 bit-shifted to the left 5 times), Intel VT-x is supported
     }
     else {
-        printf("Intel VT-x NOT supported\n");
+        printf("Intel VT-x NOT supported\n"); // Otherwise, it is not supported
     }
 
     return 0;
